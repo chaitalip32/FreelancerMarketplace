@@ -1,3 +1,9 @@
+body,html{
+    margin:0;
+    padding:0;
+    overflow-x:hidden;
+}
+
 /* Glassmorphism Effect */
 .nav-glass {
     background: rgba(255, 255, 255, 0.8);
@@ -109,3 +115,78 @@
         padding: 0.75rem;
     }
 }
+/*--------------Hero section___________________*/
+
+/* Hero Section Main Wrapper */
+.hero-wrapper {
+    position: relative;
+    min-height: 85vh; /* Takes up most of the viewport height */
+    width: 100%;
+    /* Replace with your image path */
+    background-image: url('../images/hero-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-top: -1px; /* Solves subtle glassmorphism gap */
+}
+
+/* Dark Overlay for Text Readability */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+    z-index: 1;
+}
+
+/* Ensure content is above the overlay */
+.hero-content {
+    z-index: 2;
+}
+
+/* Title Styling with Responsive Sizing */
+.hero-title {
+    font-size: 3.5rem; /* Large size for desktops */
+    letter-spacing: -1px;
+    line-height: 1.2;
+}
+
+/* Subtitle Styling */
+.hero-subtitle {
+    font-size: 1.125rem;
+    max-width: 700px;
+    line-height: 1.6;
+}
+
+/* Adjust Text Size for Tablets and Mobile */
+@media (max-width: 991.98px) {
+    .hero-title {
+        font-size: 2.75rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .hero-title {
+        font-size: 2.25rem;
+    }
+
+    .hero-wrapper {
+        min-height: 70vh; /* Shorter section for mobile */
+    }
+}
+
+/* Emerald C.T.A. Button Style (Already used in Navbar, but enforced here) */
+.btn-emerald {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white !important;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+    .btn-emerald:hover {
+        filter: brightness(110%);
+        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3) !important;
+        transform: translateY(-1px);
+    }
