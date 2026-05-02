@@ -132,14 +132,14 @@ namespace FreelanceMarketplace.Areas.Identity.Pages.Account
                 user.Country = Input.Country;
                 user.ProfileImage = "default.png";
                 user.CreatedDate = DateTime.Now;
-                
+
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    if(!await _roleManager.RoleExistsAsync(Input.Role))
+                    if (!await _roleManager.RoleExistsAsync(Input.Role))
                     {
                         await _roleManager.CreateAsync(new IdentityRole(Input.Role));
                     }
@@ -160,15 +160,15 @@ namespace FreelanceMarketplace.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
+                    // LOGIC CHANGE: Set the flag and stay on the page to show Step 3
+                    ViewData["IsSuccess"] = true;
+
+                    if (!_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
                     }
+
+                    return Page();
                 }
                 foreach (var error in result.Errors)
                 {
@@ -176,7 +176,6 @@ namespace FreelanceMarketplace.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
 

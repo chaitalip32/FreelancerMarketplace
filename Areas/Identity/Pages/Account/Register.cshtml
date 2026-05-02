@@ -1,89 +1,216 @@
 ﻿@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Register";
+    Layout = null;
 }
 
-<h1>@ViewData["Title"]</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - WorkFlow</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            
-            <div class="form-floating mb-3">
-                <input asp-for="Input.FullName" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.FullName">Full Name</label>
-                <span asp-validation-for="Input.FullName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
+    <style>
+        :root {
+            --deep-navy: #1a2233;
+            --emerald: #22c55e;
+            --border-color: #e5e7eb;
+            --text-muted: #6b7280;
+            --bg-right: #f8fafc;
+        }
 
-            <div class="form-floating mb-3">
-                <select asp-for="Input.Role" class="form-control" aria-required="true">
-                    <option value="">-- Select Role --</option>
-                    <option value="Client">Client</option>
-                    <option value="Freelancer">Freelancer</option>
-                </select>
-                <label asasp-for="Input.Role">Register As</label>
-                <span asp-validation-for="Input.Role" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Country" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Country">Country</label>
-                <span asp-validation-for="Input.Country" class="text-danger"></span>
-            </div>
+        body { margin: 0; min-height: 100vh; font-family: 'Inter', sans-serif; background: var(--bg-right); }
+        .container-custom { display: flex; min-height: 100vh; }
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+        /* LEFT PANEL */
+        .left-panel {
+            width: 50%; background-color: #1a2233; color: white;
+            display: flex; flex-direction: column; justify-content: center; padding: 80px;
+        }
+        .logo-box {
+            background-color: var(--emerald); width: 36px; height: 36px;
+            border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 32px;
+        }
+        .left-panel h1 { font-size: 44px; font-weight: 700; line-height: 1.1; margin-bottom: 20px; }
+        .left-panel p { color: #9ca3af; font-size: 18px; line-height: 1.6; }
+
+        /* RIGHT PANEL */
+        .right-panel { width: 50%; display: flex; justify-content: center; align-items: center; padding: 40px; }
+        .register-content { width: 100%; max-width: 500px; }
+
+        /* STEP PROGRESS BAR */
+        .step-progress { display: flex; gap: 10px; margin-bottom: 40px; }
+        .step-segment { flex: 1; height: 4px; background: #e5e7eb; border-radius: 2px; transition: 0.3s; }
+        .step-segment.active { background: var(--emerald); }
+
+        /* ROLE CARDS */
+        .role-card {
+            display: flex; align-items: center; padding: 24px; background: white;
+            border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 16px;
+            cursor: pointer; transition: 0.2s; text-decoration: none; color: inherit;
+        }
+        .role-card:hover { border-color: var(--emerald); background: #f0fdf4; }
+        .role-icon {
+            width: 48px; height: 48px; background: #f3f4f6; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; margin-right: 16px; font-size: 20px; color: #4b5563;
+        }
+
+        /* FORM STYLES */
+        .form-label { font-size: 14px; font-weight: 500; color: #334155; margin-bottom: 6px; }
+        .form-control { height: 48px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .btn-primary-custom {
+            background-color: var(--emerald); color: white; border: none; height: 48px;
+            font-weight: 600; border-radius: 8px; width: 100%;
+        }
+
+        /* SUCCESS VIEW */
+        .success-icon-box {
+            width: 80px; height: 80px; background: var(--emerald); color: white;
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            font-size: 40px; margin: 0 auto 24px;
+        }
+
+        .step-content { display: none; }
+        .step-content.active { display: block; }
+
+        @@media (max-width: 992px) {
+            .left-panel { display: none; }
+            .right-panel { width: 100%; padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container-custom">
+        <div class="left-panel">
+            <div class="logo-box"><i class="fa fa-briefcase text-white"></i></div>
+            <h1>Join the fastest growing freelance marketplace</h1>
+            <p>Over 50,000 professionals trust WorkFlow to connect, collaborate, and earn.</p>
+        </div>
+
+        <div class="right-panel">
+            <div class="register-content">
+                
+                <!-- Progress Bar -->
+                <div class="step-progress">
+                    <div class="step-segment active" id="seg-1"></div>
+                    <div class="step-segment" id="seg-2"></div>
+                    <div class="step-segment" id="seg-3"></div>
+                </div>
+
+                <!-- STEP 1: ROLE SELECTION -->
+                <div class="step-content @(ViewData["IsSuccess"] == null ? "active" : "")" id="step-1">
+                    <h2 class="fw-bold mb-2">How will you use WorkFlow?</h2>
+                    <p class="text-muted mb-4">Choose your role to personalize your experience</p>
+
+                    <div class="role-card" onclick="goToStep(2, 'Client')">
+                        <div class="role-icon"><i class="fa fa-building"></i></div>
                         <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
+                            <div class="fw-bold">I'm a Client</div>
+                            <div class="small text-muted">I want to hire freelancers for my projects</div>
                         </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
-</div>
+                    </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+                    <div class="role-card" onclick="goToStep(2, 'Freelancer')">
+                        <div class="role-icon"><i class="fa fa-wrench"></i></div>
+                        <div>
+                            <div class="fw-bold">I'm a Freelancer</div>
+                            <div class="small text-muted">I want to find projects and earn money</div>
+                        </div>
+                    </div>
+
+                    <p class="text-center mt-4 small text-muted">Already have an account? <a href="/Identity/Account/Login" class="text-emerald text-decoration-none fw-bold" style="color:var(--emerald)">Sign in</a></p>
+                </div>
+
+                <!-- STEP 2: USER DETAILS -->
+                <div class="step-content" id="step-2">
+                    <h2 class="fw-bold mb-2">Create your account</h2>
+                    <p class="text-muted mb-4">Join as a <span id="selected-role-text" class="fw-bold text-dark">User</span></p>
+
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <!-- CRITICAL: The hidden input MUST be inside the <form> -->
+                        <input type="hidden" id="hiddenRoleInput" asp-for="Input.Role" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="Input.FullName">Full Name</label>
+                            <input asp-for="Input.FullName" class="form-control" placeholder="John Doe" />
+                            <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="Input.Email">Email Address</label>
+                            <input asp-for="Input.Email" class="form-control" placeholder="you@example.com" />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="Input.Country">Country</label>
+                            <input asp-for="Input.Country" class="form-control" placeholder="United States" />
+                            <span asp-validation-for="Input.Country" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" asp-for="Input.Password">Password</label>
+                            <input asp-for="Input.Password" type="password" class="form-control" placeholder="Min. 8 characters" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label" asp-for="Input.ConfirmPassword">Confirm Password</label>
+                            <input asp-for="Input.ConfirmPassword" type="password" class="form-control" placeholder="Repeat password" />
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn-primary-custom">Create Account & Continue</button>
+                        <button type="button" class="btn btn-link w-100 mt-2 text-muted text-decoration-none small" onclick="goToStep(1)">Back</button>
+                    </form>
+                </div>
+
+                <!-- STEP 3: SUCCESS (Shows only if ViewData["IsSuccess"] is true) -->
+                <div class="step-content @(ViewData["IsSuccess"] != null ? "active" : "") text-center" id="step-3">
+                    <div class="success-icon-box shadow-sm">
+                        <i class="fa fa-briefcase"></i>
+                    </div>
+                    <h2 class="fw-bold mb-2">You're all set!</h2>
+                    <p class="text-muted mb-4">Your account has been created. Let's build something great.</p>
+                    <a href="/" class="btn btn-primary-custom text-decoration-none d-flex align-items-center justify-content-center">
+                        Go to Dashboard <i class="fa fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+                function goToStep(stepNumber, roleName) {
+            if (roleName) {
+                // This links the visual card click to the C# Model property
+                document.getElementById('hiddenRoleInput').value = roleName;
+                document.getElementById('selected-role-text').innerText = roleName;
+            }
+
+            document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-' + stepNumber).classList.add('active');
+
+            // Update Progress segments
+            document.querySelectorAll('.step-segment').forEach((seg, index) => {
+                if (index < stepNumber) seg.classList.add('active');
+                else seg.classList.remove('active');
+            });
+        }
+
+            // After the page reloads on success, ensure the progress bar shows all 3 segments green
+        window.onload = function() {
+            if ("@ViewData["IsSuccess"]" !== "") {
+                document.querySelectorAll('.step-segment').forEach(seg => seg.classList.add('active'));
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,33 +1,44 @@
 ﻿@page
 @model LoginModel
 @{
-    Layout = null; // important for full custom layout
+    Layout = null;
 }
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - WorkFlow</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <style>
+        :root {
+            --deep-navy: #1e293b;
+            --emerald: #22c55e;
+            --emerald-hover: #16a34a;
+            --border-color: #e5e7eb;
+            --text-muted: #6b7280;
+            --bg-right: #f1f5f9; /* The exact light gray background from Lovable */
+        }
+
         body {
             margin: 0;
-            height: 100vh;
-            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, sans-serif;
         }
 
         .container-custom {
             display: flex;
-            height: 100vh;
+            min-height: 100vh;
         }
 
-        /* LEFT SIDE */
+        /* LEFT PANEL */
         .left-panel {
             width: 50%;
-            background: #1f3a5f;
+            background-color: #1a2233;
             color: white;
             display: flex;
             flex-direction: column;
@@ -35,197 +46,296 @@
             padding: 80px;
         }
 
-            .left-panel h1 {
-                font-size: 40px;
-                font-weight: 700;
-            }
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
 
-            .left-panel p {
-                margin-top: 20px;
-                color: #cbd5e1;
-            }
+        .logo-box {
+            background-color: var(--emerald);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        /* RIGHT SIDE */
+        .left-panel h1 {
+            font-size: 44px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .left-panel p {
+            color: #9ca3af;
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 400px;
+        }
+
+        /* RIGHT PANEL - NO CARD, FLAT DESIGN */
         .right-panel {
             width: 50%;
+            background-color: #f8fafc; /* Very light slate background */
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #f8fafc;
+            padding: 40px;
         }
 
-        .login-box {
-            width: 350px;
+        .login-content {
+            width: 100%;
+            max-width: 400px;
         }
 
-            .login-box h2 {
-                font-weight: 600;
-                margin-bottom: 10px;
-            }
+        /* MOBILE LOGO */
+        .mobile-logo {
+            display: none;
+            margin-bottom: 40px;
+        }
+
+        .login-content h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .login-content p.subtitle {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
 
         .form-control {
-            height: 45px;
+            height: 48px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: white;
+            padding-left: 12px;
         }
 
+        .input-group-text {
+            background-color: white;
+            border-right: none;
+            color: #94a3b8;
+        }
+
+        .form-control:focus {
+            border-color: var(--emerald);
+            box-shadow: none;
+        }
+
+        /* REMEMBER ME SECTION */
+        /* Precise alignment for the checkbox row */
+        .remember-row {
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center; /* Vertically centers checkbox with text */
+            gap: 8px; /* Exact spacing from the design */
+            font-size: 14px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        /* Fix for Bootstrap's default checkbox margin */
+        .form-check-input {
+            margin-top: 0; /* Removes Bootstrap's default top offset */
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            border: 1px solid #d1d5db;
+        }
+
+            .form-check-input:checked {
+                background-color: var(--emerald);
+                border-color: var(--emerald);
+            }
+
+        /* BUTTONS */
         .btn-login {
-            background-color: #22c55e;
+            background-color: var(--emerald);
+            color: white;
             border: none;
-            height: 45px;
+            height: 48px;
             font-weight: 600;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            transition: 0.2s;
         }
 
             .btn-login:hover {
-                background-color: #16a34a;
+                background-color: var(--emerald-hover);
             }
 
-        .social-btns button {
-            width: 48%;
+        .divider {
+            display: flex;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 24px;
+        }
+
+            .divider::before, .divider::after {
+                content: "";
+                flex: 1;
+                height: 1px;
+                background: #e2e8f0;
+            }
+
+            .divider:not(:empty)::before {
+                margin-right: 12px;
+            }
+
+            .divider:not(:empty)::after {
+                margin-left: 12px;
+            }
+
+        .btn-social {
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            height: 48px;
+            border-radius: 8px;
+            font-weight: 500;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+            .btn-social:hover {
+                background-color: #f8fafc;
+                border-color: #cbd5e1;
+            }
+
+        .signup-text {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 32px;
+        }
+
+            .signup-text a {
+                color: var(--emerald);
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+        /* RESPONSIVE */
+        @@media (max-width: 992px) {
+            .left-panel {
+                display: none;
+            }
+
+            .right-panel {
+                width: 100%;
+                background-color: #f8fafc;
+                padding: 24px;
+            }
+
+            .mobile-logo {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                justify-content: center;
+            }
+
+            .login-content h2, .login-content p.subtitle {
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="container-custom">
-
-        <!-- LEFT SIDE -->
         <div class="left-panel">
-            <h3>WorkFlow</h3>
-
+            <div class="logo-wrapper">
+                <div class="logo-box">
+                    <i class="fa fa-briefcase text-white"></i>
+                </div>
+                <h4 class="m-0 fw-bold">WorkFlow</h4>
+            </div>
             <h1>Welcome back to your workspace</h1>
-
-            <p>
-                Manage projects, collaborate with teams,
-                and grow your business — all in one place.
-            </p>
+            <p>Manage projects, collaborate with teams, and grow your business — all in one place.</p>
         </div>
 
-        <!-- RIGHT SIDE -->
         <div class="right-panel">
-            <div class="login-box">
+            <div class="login-content">
+                <!-- Mobile Logo -->
+                <div class="mobile-logo">
+                    <div class="logo-box">
+                        <i class="fa fa-briefcase text-white"></i>
+                    </div>
+                    <h4 class="m-0 fw-bold" style="color:#0f172a">WorkFlow</h4>
+                </div>
 
                 <h2>Sign in to your account</h2>
-                <p class="text-muted">Enter your credentials to access your dashboard</p>
+                <p class="subtitle">Enter your credentials to access your dashboard</p>
 
                 <form method="post">
-
-                    <div class="mb-3">
-                        <label>Email Address</label>
-                        <input asp-for="Input.Email" class="form-control" placeholder="you@example.com" />
+                    <label class="form-label">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-regular fa-envelope"></i></span>
+                        <input asp-for="Input.Email" class="form-control border-start-0 shadow-none" placeholder="you@example.com" />
                     </div>
 
-                    <div class="mb-2">
-                        <label>Password</label>
-                        <input asp-for="Input.Password" type="password" class="form-control" />
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label m-0">Password</label>
+                        <a asp-page="./ForgotPassword" class="text-decoration-none" style="font-size: 13px; color: var(--emerald);">Forgot password?</a>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                        <input asp-for="Input.Password" type="password" class="form-control border-start-0 shadow-none" placeholder="••••••••" />
                     </div>
 
-                    <div class="d-flex justify-content-between mb-3">
-                        <div>
-                            <input asp-for="Input.RememberMe" />
-                            <label>Remember me</label>
+                    <div class="remember-row">
+                        <input class="form-check-input me-2 shadow-none" type="checkbox" asp-for="Input.RememberMe">
+                        <span>Remember me</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-login w-100">Sign In <i class="fa fa-arrow-right ms-2"></i></button>
+
+                    <div class="divider">Or continue with</div>
+
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-social w-100">
+                                <i class="fa-brands fa-google"></i> Google
+                            </button>
                         </div>
-                        <a asp-page="./ForgotPassword">Forgot password?</a>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-social w-100">
+                                <i class="fa-brands fa-github"></i> GitHub
+                            </button>
+                        </div>
                     </div>
 
-                    <button type="submit" class="btn btn-login w-100 mb-3">
-                        Sign In →
-                    </button>
-
-                    <div class="text-center mb-2">OR CONTINUE WITH</div>
-
-                    <div class="d-flex justify-content-between social-btns">
-                        <button type="button" class="btn btn-outline-secondary">Google</button>
-                        <button type="button" class="btn btn-outline-secondary">GitHub</button>
-                    </div>
-
-                    <p class="text-center mt-3">
-                        Don't have an account?
-                        <a asp-page="./Register">Sign up free</a>
+                    <p class="signup-text">
+                        Don't have an account? <a asp-page="./Register">Sign up free</a>
                     </p>
-
                 </form>
-
             </div>
         </div>
-
     </div>
 
 </body>
 </html>
-@*
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div>
-</div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
- *@
